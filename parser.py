@@ -17,6 +17,18 @@ data = r.json()
 # pattern = re.compile('(?<!\n)\n(?!\n)|\n{3,}')
 pattern = re.compile('\n{1,}')
 
+non_ascii_characters = []
+
+replacements = {
+    8211: '-',
+    8216: '\'',
+    8217: '\'',
+    8220: '"',
+    8221: '"',
+    8226: '-',
+    8232: ' ',
+}
+
 # get a csv output file
 with open("summaries.csv", mode="w", encoding="utf-8") as out_file:
     # get a writer for the file
@@ -49,9 +61,30 @@ with open("summaries.csv", mode="w", encoding="utf-8") as out_file:
                         for summary in summaries:
                             print(summary)
                             str_summary = str(summary)
+                            # str_summary.replace(chr(8211), '-')
+                            # str_summary.replace(chr(8216), '\'')
+                            # str_summary.replace(chr(8217), '\'')
+                            # str_summary.replace(chr(8220), '"')
+                            # str_summary.replace(chr(8221), '"')
+                            # str_summary.replace(chr(8226), '-')
+                            # str_summary.replace(chr(8232), '\n')
+                            # str_summary.replace(u"\u2013", '-')
+                            # str_summary.replace(u"\u2018", '\'')
+                            # str_summary.replace(u"\u2019", '\'')
+                            # str_summary.replace(u"\u201C", '"')
+                            # str_summary.replace(u"\u201D", '"')
+                            # str_summary.replace(u"\u2022", '-')
+                            # str_summary.replace(u"\u2028", '\n')
                             clean = re.sub(pattern, ' ', str_summary)
                             new_soup = BeautifulSoup(clean, 'html.parser', from_encoding='utf-8')
                             temp = new_soup.text
+                            temp_list = list(temp)
+                            for i, c in enumerate(temp_list):
+                                if ord(c) > 127:
+                                    print(c)
+                                    non_ascii_characters.append(c)
+                                    temp_list[i] = replacements[ord(c)]
+                            temp = "".join(temp_list)
                             if len(temp) > len(final):
                                 final = temp
                             # print(new_soup.original_encoding)
@@ -59,3 +92,10 @@ with open("summaries.csv", mode="w", encoding="utf-8") as out_file:
                         print()
                         print()
                         out_writer.writerow([sefer, perek_num, final])
+
+with open("non_ascii.txt", mode="w", encoding="utf-8") as out_file:
+    non_ascii_character_set = set(non_ascii_characters)
+    print(non_ascii_character_set)
+    for c in non_ascii_character_set:
+        out_file.write("%s : %d\n" % (c, ord(c)))
+    out_file.close()
