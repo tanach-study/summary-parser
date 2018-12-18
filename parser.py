@@ -30,7 +30,7 @@ replacements = {
 }
 
 # get a csv output file
-with open("summaries.csv", mode="w", encoding="utf-8") as out_file:
+with open("summaries.csv", mode="w", encoding="ascii") as out_file:
     # get a writer for the file
     out_writer = csv.writer(out_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
     # write a header row
@@ -91,6 +91,7 @@ with open("summaries.csv", mode="w", encoding="utf-8") as out_file:
                             print()
                         print()
                         print()
+                        final.encode('ascii')
                         out_writer.writerow([sefer, perek_num, final])
 
 with open("non_ascii.txt", mode="w", encoding="utf-8") as out_file:
