@@ -11,3 +11,5 @@ In order to use this, follow these steps:
 3. Run with Python 3.
 
 This script also replaces all the Unicode characters in our dataset with ASCII translations, and can be found in the `replacements` dictionary in [parser.py](parser.py).
+
+Note that this code is seriously naive - it is extremely unoptimized, doesn't check much for edge cases, and doesn't do much error handling.
